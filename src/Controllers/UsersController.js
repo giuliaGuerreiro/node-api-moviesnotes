@@ -77,6 +77,25 @@ class UsersController {
 
     return response.status(200).json()
   }
+
+  async delete(request, response) {
+    const { id } = request.params
+
+    const database = await sqliteConnection()
+
+    // Verify if user exists
+    const user = await database.get("SELECT * FROM users WHERE id = ?", [id])
+    if(!user) {
+      throw new AppError('Usuário não existe')
+    }
+
+    await database.run(`
+    DELETE FROM users
+    WHERE id = ?
+    `, [id])
+
+    return response.status(200).json()
+  }
 }
 
 module.exports = UsersController
