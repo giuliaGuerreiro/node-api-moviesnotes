@@ -43,6 +43,22 @@ class MovieNotesController {
 
     return response.status(201).json()
   }
+
+  async update(request, response) {
+    const { id } = request.params
+    const { title, description, rating } = request.body
+
+    // Verify if note exists
+    const movieNote = await knex("movie_notes").where({ id }).first()
+    console.log(movieNote)
+    if(!movieNote) {
+      throw new AppError('Nota não existe')
+    }
+
+    await knex("movie_notes").where({ id }).update({title, description, rating})
+
+    return response.status(200).json()
+  }
 }
 
 module.exports = MovieNotesController
